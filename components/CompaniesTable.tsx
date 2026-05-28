@@ -209,7 +209,7 @@ export default function CompaniesTable({ companies, contacts, deals }: Props) {
                 className="grid grid-cols-[1.5fr_1fr_1fr_0.7fr_0.9fr_60px] gap-4 items-center px-5 py-3 border-b border-line last:border-0 hover:bg-canvas/60 group transition-colors"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded bg-brand-tint border border-brand/20 text-brand flex items-center justify-center text-[10px] font-semibold shrink-0">
+                  <div className="w-8 h-8 rounded bg-paper border border-hairline text-inkSoft flex items-center justify-center text-[10px] font-semibold shrink-0">
                     {initials(c.name) || <Building2 size={13} />}
                   </div>
                   <div className="font-medium text-sm truncate">{c.name}</div>

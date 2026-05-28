@@ -394,7 +394,7 @@ export default function DealDrawer({ deal, activities, contacts, users, onClose,
               <button
                 onClick={saveEdit}
                 disabled={saving || !edit.name}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-brand text-white rounded disabled:opacity-30 hover:bg-brand-dark"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-forest text-white rounded disabled:opacity-30 hover:opacity-90"
               >
                 {saving && <Loader2 size={12} className="animate-spin" />}
                 Save
@@ -427,7 +427,7 @@ function EditField({
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-canvas border border-line rounded px-2.5 py-2 text-sm focus:outline-none focus:border-brand"
+        className="w-full bg-canvas border border-line rounded px-2.5 py-2 text-sm focus:outline-none focus:border-inkDeep"
       />
     </div>
   );

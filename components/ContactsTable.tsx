@@ -209,7 +209,7 @@ export default function ContactsTable({ contacts, companies, deals }: Props) {
                 className="grid grid-cols-[1fr_1fr_1.5fr_1fr_0.7fr_60px] gap-4 items-center px-5 py-3 border-b border-line last:border-0 hover:bg-canvas/60 transition-colors group"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-brand-tint border border-brand/20 text-brand flex items-center justify-center text-[10px] font-semibold shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-paper border border-hairline text-inkSoft flex items-center justify-center text-[10px] font-semibold shrink-0">
                     {initials(c.name)}
                   </div>
                   <div className="font-medium text-sm truncate">{c.name}</div>
@@ -222,7 +222,7 @@ export default function ContactsTable({ contacts, companies, deals }: Props) {
                   {c.email ? (
                     <a
                       href={`mailto:${c.email}`}
-                      className="text-brand hover:underline flex items-center gap-1.5 min-w-0"
+                      className="text-forest hover:underline flex items-center gap-1.5 min-w-0"
                     >
                       <Mail size={12} className="shrink-0" />
                       <span className="truncate">{c.email}</span>
@@ -232,7 +232,7 @@ export default function ContactsTable({ contacts, companies, deals }: Props) {
                   )}
                 </div>
                 <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-6 h-6 rounded bg-brand-tint border border-brand/15 text-brand flex items-center justify-center text-[9px] font-semibold shrink-0">
+                  <div className="w-6 h-6 rounded bg-paper border border-hairline text-inkSoft flex items-center justify-center text-[9px] font-semibold shrink-0">
                     {initials(company?.name)}
                   </div>
                   <div className="min-w-0">

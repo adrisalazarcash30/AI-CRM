@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import type { Company, Deal, User } from "@/types";
+import { STAGE_LABEL } from "@/types";
+import HoverCard from "@/components/ui/HoverCard";
+import { formatCurrencyFull, initials } from "@/lib/format";
 
 interface Props {
   deals: Deal[];
@@ -19,7 +22,10 @@ type BriefingData = {
 const CACHE_KEY = "dashboard.briefing.v1";
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
-export default function Briefing({ deals, dismissed }: Props) {
+export default function Briefing({ deals, companies, users, dismissed }: Props) {
+  const dealMap = useMemo(() => new Map(deals.map((d) => [d.id, d])), [deals]);
+  const companyMap = useMemo(() => new Map(companies.map((c) => [c.id, c])), [companies]);
+  const userMap = useMemo(() => new Map(users.map((u) => [u.id, u])), [users]);
   const [data, setData] = useState<BriefingData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -74,18 +80,63 @@ export default function Briefing({ deals, dismissed }: Props) {
       if (m.index > last) parts.push(text.slice(last, m.index));
       const label = m[1];
       const id = m[2];
+      const deal = dealMap.get(id);
+      const company = deal ? companyMap.get(deal.company_id) : null;
+      const owner = deal ? userMap.get(deal.owner_id) : null;
       parts.push(
-        <button
+        <HoverCard
           key={k++}
-          onClick={() => openDeal(id)}
-          className="text-inkDeep hover:text-forest transition-colors"
-          style={{
-            borderBottom: "1px dashed #C9C6C0",
-            paddingBottom: "1px",
-          }}
-        >
-          {label}
-        </button>
+          title={label}
+          subtitle={company?.name ?? undefined}
+          initials={initials(company?.name ?? label)}
+          href={deal ? `/?deal=${deal.id}` : undefined}
+          facts={
+            deal
+              ? [
+                  { label: "Owner", value: owner?.name ?? "—" },
+                  {
+                    label: "Value",
+                    value: (
+                      <span style={{ fontVariantNumeric: "tabular-nums" }}>
+                        {formatCurrencyFull(deal.value_cents)}
+                      </span>
+                    ),
+                  },
+                  { label: "Stage", value: STAGE_LABEL[deal.stage] },
+                  {
+                    label: "Risk",
+                    value: deal.risk ? (
+                      <span
+                        className={
+                          deal.risk === "high"
+                            ? "text-[#9F2D2D]"
+                            : deal.risk === "medium"
+                            ? "text-amberWarn"
+                            : "text-forest"
+                        }
+                      >
+                        {deal.risk}
+                      </span>
+                    ) : (
+                      "—"
+                    ),
+                  },
+                ]
+              : []
+          }
+          trigger={
+            <button
+              onClick={() => openDeal(id)}
+              className="text-inkDeep hover:text-forest transition-colors"
+              style={{
+                borderBottom: "1px dashed #C9C6C0",
+                paddingBottom: "1px",
+              }}
+            >
+              {label}
+            </button>
+          }
+        />
       );
       last = re.lastIndex;
     }

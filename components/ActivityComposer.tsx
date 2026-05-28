@@ -19,7 +19,7 @@ type Parsed = {
 };
 
 const SENTIMENT_COLOR: Record<string, string> = {
-  positive: "text-brand",
+  positive: "text-forest",
   neutral: "text-muted",
   negative: "text-danger",
 };
@@ -70,7 +70,7 @@ export default function ActivityComposer({ dealId, onLogged }: Props) {
       <form onSubmit={submit} className="relative">
         <Sparkles
           size={14}
-          className="absolute left-3 top-3 text-brand pointer-events-none"
+          className="absolute left-3 top-3 text-forest pointer-events-none"
         />
         <input
           value={text}
@@ -96,7 +96,7 @@ export default function ActivityComposer({ dealId, onLogged }: Props) {
       {parsed && (
         <div className="mt-3 border border-line rounded p-3 bg-canvas">
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted mb-2">
-            <Sparkles size={10} className="text-brand" />
+            <Sparkles size={10} className="text-forest" />
             Parsed by Claude
           </div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">

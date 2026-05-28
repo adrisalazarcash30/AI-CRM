@@ -30,9 +30,9 @@ interface Props {
 }
 
 const ACTIVITY_COLORS: Record<string, string> = {
-  call: "bg-brand",
-  email: "bg-brand-light",
-  meeting: "bg-warn",
+  call: "bg-forest",
+  email: "bg-emerald/60",
+  meeting: "bg-amberWarn",
   demo: "bg-emerald",
   note: "bg-slate-400",
   task: "bg-navy",
@@ -81,10 +81,10 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <div className="text-[10px] uppercase tracking-[0.18em] text-brand font-semibold">
+          <div className="text-[10px] uppercase tracking-[0.18em] text-forest font-semibold">
             Reports & Analytics
           </div>
-          <h1 className="font-display text-2xl text-navy">
+          <h1 className="font-display text-2xl text-inkDeep">
             Sales performance · {scopeLabel} · {periodLabel(period)}
           </h1>
         </div>
@@ -109,7 +109,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
               </ScopeBtn>
               {users.map((u) => (
                 <ScopeBtn key={u.id} active={scope === u.id} onClick={() => setScope(u.id)}>
-                  <span className="w-4 h-4 rounded-full bg-brand-tint text-brand text-[8px] font-semibold flex items-center justify-center">
+                  <span className="w-4 h-4 rounded-full bg-paper text-forest text-[8px] font-semibold flex items-center justify-center">
                     {initials(u.name)}
                   </span>
                   {u.name.split(" ")[0]}
@@ -178,7 +178,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
         <div className="lg:col-span-2 border border-line rounded bg-white shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-brand font-semibold">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-forest font-semibold">
                 Pipeline funnel
               </div>
               <div className="text-sm text-muted">Value by stage · {scopeLabel}</div>
@@ -198,7 +198,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
                     {r.count}
                   </span>
                 </div>
-                <div className="w-28 text-right text-xs font-medium font-display text-navy">
+                <div className="w-28 text-right text-xs font-medium font-display text-inkDeep">
                   {formatCurrency(r.value)}
                 </div>
               </div>
@@ -214,7 +214,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
 
         {/* Activity by type donut-ish */}
         <div className="border border-line rounded bg-white shadow-card p-5">
-          <div className="text-[10px] uppercase tracking-[0.18em] text-brand font-semibold mb-3">
+          <div className="text-[10px] uppercase tracking-[0.18em] text-forest font-semibold mb-3">
             Activity mix
           </div>
           <div className="text-sm text-muted mb-3">Last 60 days · {scopeLabel}</div>
@@ -247,7 +247,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
       <section className="border border-line rounded bg-white shadow-card overflow-hidden">
         <div className="px-5 py-3 border-b border-line flex items-center justify-between">
           <div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-brand font-semibold">
+            <div className="text-[10px] uppercase tracking-[0.18em] text-forest font-semibold">
               Sales rep comparison
             </div>
             <div className="text-sm text-muted">Side-by-side performance · last 90 days</div>
@@ -272,13 +272,13 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
               <tr
                 key={r.user.id}
                 className={`border-t border-line hover:bg-canvas/60 cursor-pointer ${
-                  scope === r.user.id ? "bg-brand-tint/40" : ""
+                  scope === r.user.id ? "bg-forest/5" : ""
                 }`}
                 onClick={() => setScope(r.user.id)}
               >
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-full bg-brand-tint border border-brand/20 text-brand flex items-center justify-center text-[10px] font-semibold">
+                    <div className="w-7 h-7 rounded-full bg-paper border border-hairline text-inkSoft flex items-center justify-center text-[10px] font-semibold">
                       {initials(r.user.name)}
                     </div>
                     <div>
@@ -288,7 +288,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
                   </div>
                 </td>
                 <td className="text-right px-3 py-3 font-display">{formatCurrency(r.openValue)}</td>
-                <td className="text-right px-3 py-3 font-display text-brand">
+                <td className="text-right px-3 py-3 font-display text-forest">
                   {formatCurrency(r.weighted)}
                 </td>
                 <td className="text-right px-3 py-3 font-display text-emerald">
@@ -300,7 +300,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
                       r.winRate >= 50
                         ? "bg-emerald/10 text-emerald"
                         : r.winRate >= 25
-                        ? "bg-warn/10 text-warn"
+                        ? "bg-amberWarn/10 text-warn"
                         : "bg-danger/10 text-danger"
                     }`}
                   >
@@ -320,7 +320,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
       <section className="border border-line rounded bg-white shadow-card overflow-hidden">
         <div className="px-5 py-3 border-b border-line flex items-center justify-between flex-wrap gap-3">
           <div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-brand font-semibold flex items-center gap-1.5">
+            <div className="text-[10px] uppercase tracking-[0.18em] text-forest font-semibold flex items-center gap-1.5">
               <Flag size={11} />
               Stage aging
             </div>
@@ -335,12 +335,12 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
               min={1}
               value={agingThreshold}
               onChange={(e) => setAgingThreshold(Math.max(1, parseInt(e.target.value || "0", 10)))}
-              className="w-16 bg-canvas border border-line rounded px-2 py-1 text-sm focus:outline-none focus:border-brand"
+              className="w-16 bg-canvas border border-line rounded px-2 py-1 text-sm focus:outline-none focus:border-inkDeep"
             />
             <span className="text-muted">days</span>
             <span className="ml-3 text-muted">·</span>
             <span className="flex items-center gap-1 text-muted">
-              <span className="w-2 h-2 rounded-full bg-warn" /> warn
+              <span className="w-2 h-2 rounded-full bg-amberWarn" /> warn
             </span>
             <span className="flex items-center gap-1 text-muted">
               <span className="w-2 h-2 rounded-full bg-danger" /> critical &gt; {AGING_CRITICAL_DAYS}d
@@ -378,7 +378,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
                     </td>
                     <td className="px-3 py-2.5">
                       <div className="flex items-center gap-1.5">
-                        <span className="w-5 h-5 rounded-full bg-brand-tint border border-brand/20 text-brand text-[9px] font-semibold flex items-center justify-center">
+                        <span className="w-5 h-5 rounded-full bg-paper border border-hairline text-inkSoft text-[9px] font-semibold flex items-center justify-center">
                           {initials(owner?.name)}
                         </span>
                         <span className="text-xs truncate">{owner?.name ?? "—"}</span>
@@ -413,7 +413,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
                           Critical
                         </span>
                       ) : row.severity === "warn" ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-warn/10 text-warn">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-amberWarn/10 text-warn">
                           <Flag size={10} />
                           Flagged
                         </span>
@@ -439,7 +439,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
 
       {/* Activity per rep */}
       <section className="border border-line rounded bg-white shadow-card p-5">
-        <div className="text-[10px] uppercase tracking-[0.18em] text-brand font-semibold mb-3">
+        <div className="text-[10px] uppercase tracking-[0.18em] text-forest font-semibold mb-3">
           Activity volume by rep
         </div>
         <div className="text-sm text-muted mb-4">Last 60 days · all activity types</div>
@@ -447,7 +447,7 @@ export default function ReportsView({ deals, activities, users, companies }: Pro
           {activityByRep.map((row) => (
             <div key={row.user.id} className="flex items-center gap-3">
               <div className="w-32 flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-brand-tint border border-brand/20 text-brand flex items-center justify-center text-[9px] font-semibold">
+                <div className="w-6 h-6 rounded-full bg-paper border border-hairline text-inkSoft flex items-center justify-center text-[9px] font-semibold">
                   {initials(row.user.name)}
                 </div>
                 <span className="text-sm truncate">{row.user.name}</span>
@@ -494,7 +494,7 @@ function ScopeBtn({
     <button
       onClick={onClick}
       className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded transition-colors ${
-        active ? "bg-brand text-white" : "text-ink hover:bg-canvas"
+        active ? "bg-inkDeep text-white" : "text-ink hover:bg-canvas"
       }`}
     >
       {children}
@@ -518,20 +518,20 @@ function Kpi({
   return (
     <div
       className={`border border-line rounded bg-white shadow-card p-4 ${
-        accent ? "ring-1 ring-brand/20 bg-brand-tint/30" : ""
+        accent ? "ring-1 ring-forest/20 bg-forest/5" : ""
       }`}
     >
       <div className="flex items-center justify-between mb-2">
         <div className="text-[10px] uppercase tracking-[0.18em] text-muted">{label}</div>
         <div
           className={`w-7 h-7 rounded flex items-center justify-center ${
-            accent ? "bg-brand text-white" : "bg-brand-tint text-brand"
+            accent ? "bg-inkDeep text-white" : "bg-paper text-forest"
           }`}
         >
           <Icon size={14} />
         </div>
       </div>
-      <div className={`font-display text-xl ${accent ? "text-brand" : "text-navy"}`}>{value}</div>
+      <div className={`font-display text-xl ${accent ? "text-forest" : "text-inkDeep"}`}>{value}</div>
       {sub && <div className="text-[11px] text-muted mt-0.5">{sub}</div>}
     </div>
   );
@@ -541,7 +541,7 @@ function Mini({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <div className="text-[10px] uppercase tracking-wider text-muted">{label}</div>
-      <div className="font-display text-base text-navy">{value}</div>
+      <div className="font-display text-base text-inkDeep">{value}</div>
     </div>
   );
 }
@@ -682,8 +682,8 @@ function computeStageData(deals: Deal[]) {
       : s === "closed_lost"
       ? "bg-danger"
       : s === "negotiation"
-      ? "bg-warn"
-      : "bg-brand";
+      ? "bg-amberWarn"
+      : "bg-forest";
   const rows = STAGES.map((s) => ({
     stage: s,
     count: byStage.get(s)!.count,
