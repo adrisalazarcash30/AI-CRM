@@ -1,5 +1,5 @@
 import { createServerClient } from "@/lib/supabase";
-import DashboardShell from "@/components/dashboard/DashboardShell";
+import AppShell from "@/components/AppShell";
 import DashboardClient from "@/components/dashboard/DashboardClient";
 import type { Activity, Company, Deal, User } from "@/types";
 
@@ -20,13 +20,15 @@ export default async function DashboardPage() {
   ]);
 
   return (
-    <DashboardShell users={(users ?? []) as User[]}>
-      <DashboardClient
-        deals={(deals ?? []) as Deal[]}
-        activities={(activities ?? []) as Activity[]}
-        users={(users ?? []) as User[]}
-        companies={(companies ?? []) as Company[]}
-      />
-    </DashboardShell>
+    <AppShell active="dashboard" users={(users ?? []) as User[]}>
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-8">
+        <DashboardClient
+          deals={(deals ?? []) as Deal[]}
+          activities={(activities ?? []) as Activity[]}
+          users={(users ?? []) as User[]}
+          companies={(companies ?? []) as Company[]}
+        />
+      </div>
+    </AppShell>
   );
 }

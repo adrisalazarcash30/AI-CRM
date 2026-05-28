@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { User } from "@/types";
+import { initials } from "@/lib/format";
 
 const STORAGE_KEY = "pipeline.currentRep";
 
@@ -23,17 +24,25 @@ export default function RepSwitcher({ users }: { users: User[] }) {
     localStorage.setItem(STORAGE_KEY, id);
   }
 
+  const me = users.find((u) => u.id === current) ?? users[0];
+
   return (
-    <select
-      value={current}
-      onChange={(e) => pick(e.target.value)}
-      className="bg-transparent border border-line rounded px-2 py-1 text-sm focus:outline-none focus:border-ink"
-    >
-      {users.map((u) => (
-        <option key={u.id} value={u.id}>
-          {u.name}
-        </option>
-      ))}
-    </select>
+    <label className="flex items-center gap-2 cursor-pointer">
+      <span className="w-8 h-8 rounded-full bg-forest text-white flex items-center justify-center text-[11px] font-semibold">
+        {initials(me?.name)}
+      </span>
+      <select
+        value={current}
+        onChange={(e) => pick(e.target.value)}
+        className="bg-transparent border-0 text-[13px] text-inkDeep focus:outline-none cursor-pointer"
+        aria-label="Switch rep"
+      >
+        {users.map((u) => (
+          <option key={u.id} value={u.id}>
+            {u.name}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }
