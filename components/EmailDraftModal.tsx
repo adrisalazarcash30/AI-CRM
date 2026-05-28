@@ -63,11 +63,10 @@ export default function EmailDraftModal({
   }
 
   function openInEmailClient() {
-    const params = new URLSearchParams({
-      subject,
-      body,
-    });
-    window.location.href = `mailto:${to}?${params.toString()}`;
+    // Use encodeURIComponent (spaces -> %20). URLSearchParams encodes spaces
+    // as "+" which Outlook renders literally in the email body.
+    const qs = `subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:${encodeURIComponent(to)}?${qs}`;
   }
 
   async function copyAll() {
