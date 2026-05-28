@@ -198,6 +198,180 @@ Today: ${new Date().toISOString().slice(0, 10)}`;
 
 export type EmailDraft = { subject: string; body: string };
 
+export type DashboardBriefing = {
+  prose: string;
+  chips: { dealId: string; dealName: string; reason: string }[];
+};
+
+export type BriefingDeal = {
+  id: string;
+  name: string;
+  company: string | null;
+  stage: string;
+  value_cents: number;
+  days_in_stage: number;
+  days_since_activity: number | null;
+  risk: string | null;
+  owner: string | null;
+};
+
+export async function dashboardBriefing(deals: BriefingDeal[]): Promise<DashboardBriefing> {
+  const open = deals.filter(
+    (d) => d.stage !== "closed_won" && d.stage !== "closed_lost"
+  );
+  const totalOpen = open.reduce((s, d) => s + d.value_cents, 0);
+  const highRisk = open
+    .filter((d) => d.risk === "high" || (d.days_in_stage ?? 0) > 21)
+    .sort((a, b) => b.value_cents - a.value_cents);
+  const stalled = open
+    .filter((d) => (d.days_since_activity ?? 0) > 10)
+    .sort((a, b) => b.value_cents - a.value_cents);
+
+  if (!hasAnthropic()) {
+    const top = [...open].sort((a, b) => b.value_cents - a.value_cents)[0];
+    const prose = `You have ${open.length} open deals worth $${(
+      totalOpen / 100000
+    ).toFixed(
+      0
+    )}k. ${
+      highRisk.length
+    } are flagged high-risk — including [${highRisk[0]?.name ?? top?.name}](#${
+      highRisk[0]?.id ?? top?.id
+    }), which has been stalled for weeks. Your biggest opportunity remains [${
+      top?.name ?? "your top deal"
+    }](#${top?.id}) — push that one before Friday.`;
+    const chips = [highRisk[0], stalled[0], top]
+      .filter((d): d is BriefingDeal => !!d)
+      .filter((d, i, arr) => arr.findIndex((x) => x.id === d.id) === i)
+      .slice(0, 3)
+      .map((d) => ({
+        dealId: d.id,
+        dealName: d.name,
+        reason:
+          d.days_since_activity != null && d.days_since_activity > 10
+            ? `No touch in ${d.days_since_activity} days`
+            : d.days_in_stage > 21
+            ? `Stalled ${d.days_in_stage}d in ${d.stage}`
+            : `High-value at risk`,
+      }));
+    return { prose, chips };
+  }
+
+  const lines = deals
+    .slice(0, 80)
+    .map(
+      (d) =>
+        `id=${d.id} | "${d.name}" @ ${d.company ?? "—"} | ${d.stage} | $${(
+          d.value_cents / 100
+        ).toFixed(0)} | ${d.days_in_stage}d in stage | last touch ${
+          d.days_since_activity ?? "never"
+        }d ago | risk=${d.risk ?? "?"} | owner=${d.owner ?? "?"}`
+    )
+    .join("\n");
+
+  const system = `You are a sales leader's chief of staff. Write a 3-sentence Monday briefing for the leader. Be specific, numeric, no fluff. When mentioning specific deals inside the prose, format them as markdown links: [Deal Name](#dealId). Use the dealId values exactly as given.
+
+Also return 3 "attention chips" — the deals the leader should personally lean on this week.
+
+Return ONLY JSON, no fences:
+{
+  "prose": "<3 sentences, may include [Deal Name](#dealId) refs>",
+  "chips": [
+    { "dealId": "<id>", "dealName": "<name>", "reason": "<short reason, 6-9 words>" },
+    ...
+  ]
+}`;
+
+  const res = await anthropic().messages.create({
+    model: MODEL,
+    max_tokens: 600,
+    temperature: 0.4,
+    system,
+    messages: [{ role: "user", content: `Pipeline snapshot:\n${lines}` }],
+  });
+
+  const parsed = tryParseJson<DashboardBriefing>(extractText(res));
+  if (!parsed) {
+    return {
+      prose: `${open.length} open deals · $${(totalOpen / 100000).toFixed(
+        0
+      )}k pipeline.`,
+      chips: [],
+    };
+  }
+  return parsed;
+}
+
+export type AtRiskItem = {
+  deal_id: string;
+  reason: string;
+  severity: "low" | "medium" | "high";
+};
+
+export async function rankAtRisk(deals: BriefingDeal[]): Promise<AtRiskItem[]> {
+  const candidates = deals.filter(
+    (d) =>
+      d.stage !== "closed_won" &&
+      d.stage !== "closed_lost" &&
+      (d.days_in_stage > 14 ||
+        (d.days_since_activity ?? 0) > 10 ||
+        d.risk === "high")
+  );
+
+  if (candidates.length === 0) return [];
+
+  if (!hasAnthropic()) {
+    return candidates
+      .sort((a, b) => {
+        const score = (d: BriefingDeal) =>
+          (d.risk === "high" ? 1 : 0) * 1000 +
+          (d.days_since_activity ?? 0) * 10 +
+          d.days_in_stage * 5 +
+          d.value_cents / 100000;
+        return score(b) - score(a);
+      })
+      .slice(0, 5)
+      .map((d) => ({
+        deal_id: d.id,
+        severity:
+          d.risk === "high" || d.days_in_stage > 30 ? "high" : "medium",
+        reason:
+          (d.days_since_activity ?? 0) > 14
+            ? `No activity in ${d.days_since_activity} days`
+            : d.days_in_stage > 21
+            ? `Stalled ${d.days_in_stage}d in ${d.stage}`
+            : `Needs attention — last touched ${d.days_since_activity}d ago`,
+      }));
+  }
+
+  const lines = candidates
+    .map(
+      (d) =>
+        `id=${d.id} | ${d.name} @ ${d.company ?? "—"} | ${d.stage} | $${(
+          d.value_cents / 100
+        ).toFixed(0)} | days_in_stage=${d.days_in_stage} | days_since_activity=${
+          d.days_since_activity ?? "never"
+        } | risk=${d.risk ?? "?"} | owner=${d.owner ?? "?"}`
+    )
+    .join("\n");
+
+  const system = `Rank the top 5 most at-risk deals from this list. For each, give a one-sentence reason (max 14 words) and a severity rating. Return ONLY JSON, no fences:
+[
+  { "deal_id": "<id>", "severity": "low|medium|high", "reason": "<reason>" }
+]`;
+
+  const res = await anthropic().messages.create({
+    model: MODEL,
+    max_tokens: 500,
+    temperature: 0.2,
+    system,
+    messages: [{ role: "user", content: lines }],
+  });
+
+  const parsed = tryParseJson<AtRiskItem[]>(extractText(res));
+  return parsed ?? [];
+}
+
 export async function composeFollowUpEmail(input: {
   dealName: string;
   companyName: string | null;

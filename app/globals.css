@@ -31,3 +31,17 @@ html, body {
 
 .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
 .scrollbar-thin::-webkit-scrollbar-thumb { background: #c9c7c5; border-radius: 3px; }
+
+/* Editorial shimmer for AI loading states */
+@keyframes shimmer-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.85; }
+}
+.shimmer {
+  animation: shimmer-pulse 1.6s ease-in-out infinite;
+}
+
+.writing-vertical {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
