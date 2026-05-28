@@ -1,0 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter+Tight:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --canvas: #F3F3F3;
+  --surface: #FFFFFF;
+  --ink: #181818;
+  --muted: #706E6B;
+  --line: #DDDBDA;
+  --brand: #0176D3;
+  --brand-dark: #014486;
+  --brand-light: #1B96FF;
+  --brand-tint: #EAF5FE;
+  --navy: #032D60;
+}
+
+html, body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: 'Inter Tight', 'Salesforce Sans', ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+
+* { border-color: var(--line); }
+
+.font-display { font-family: 'Fraunces', ui-serif, Georgia, serif; }
+
+.scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: #c9c7c5; border-radius: 3px; }
