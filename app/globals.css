@@ -45,3 +45,16 @@ html, body {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
 }
+
+/* Closed-Won celebration burst */
+@keyframes celebrate-pop {
+  0%   { transform: translate(0, 0) scale(0.8); opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.4); opacity: 0; }
+}
+@keyframes celebrate-label {
+  0%   { opacity: 0; transform: translate(-50%, calc(-50% + 14px)); }
+  20%  { opacity: 1; transform: translate(-50%, -50%); }
+  80%  { opacity: 1; transform: translate(-50%, -50%); }
+  100% { opacity: 0; transform: translate(-50%, calc(-50% - 14px)); }
+}

@@ -34,6 +34,7 @@ import AskBar from "./AskBar";
 import StageBar from "./StageBar";
 import NewDealModal from "./NewDealModal";
 import Dropdown, { type DropdownItem } from "./Dropdown";
+import Celebrate from "./Celebrate";
 import { formatCurrencyFull } from "@/lib/format";
 
 interface Props {
@@ -103,6 +104,7 @@ export default function KanbanBoard({
   const [stageFilter, setStageFilter] = useState<Set<string>>(new Set());
   const [pinned, setPinned] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [celebrate, setCelebrate] = useState(0);
   const askRef = useRef<HTMLInputElement>(null);
 
   // Pinned persistence
@@ -211,6 +213,10 @@ export default function KanbanBoard({
           : d
       )
     );
+    // Celebrate when something hits closed_won
+    if (newStage === "closed_won" && prevStage !== "closed_won") {
+      setCelebrate((c) => c + 1);
+    }
 
     try {
       const res = await fetch("/api/deals/stage", {
@@ -488,6 +494,8 @@ export default function KanbanBoard({
           </div>
         </div>
       </DndContext>
+
+      <Celebrate trigger={celebrate} />
 
       <NewDealModal
         open={showNewDeal}
